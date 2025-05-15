@@ -1,0 +1,53 @@
+/* DashboardCards.css */
+.dashboard-cards-container {
+  display: flex;
+  gap: 1rem;
+  margin: -0.5rem; /* Counteract column padding */
+}
+
+.dashboard-card-item {
+  background-color: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  flex: 1;
+  min-width: 0; /* Fix flexbox overflow */
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.dashboard-card-content {
+  width: 100%;
+}
+
+.dashboard-card-title {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-card-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-cards-container {
+    flex-direction: column;
+  }
+  
+  .dashboard-card-item {
+    width: 100%;
+    flex: none;
+  }
+}
