@@ -400,7 +400,7 @@ const VerifyUser = () => {
             <div className="d-flex justify-content-center gap-3">
               <CButton
                 onClick={() => {
-                  handleSubmit('approved')
+                  handleSubmit('verified')
                 }}
                 color="success"
                 size="lg"
