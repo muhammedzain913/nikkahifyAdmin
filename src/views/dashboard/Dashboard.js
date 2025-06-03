@@ -4,8 +4,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getActiveUsers,
   getAllUsers,
+  getDailyActiveUsers,
   getFlaggedUsers,
+  getMonthlyActiveUsers,
+  getMonthlyMatches,
+  getMostSkippedSection,
   getPendingUsers,
+  getSupportedUsers,
+  getUserSelectionMetrics,
+  getWeeklyMatches,
+  testApi,
 } from '../../Redux/Slices/userSlice'
 import {
   CAvatar,
@@ -67,13 +75,55 @@ const Dashboard = () => {
   const dispatch = useDispatch()
 
   // Get data from Redux store
-  const { users, loading, error, pendingUsers, activeUsers, flaggedUsers } = useSelector(
-    (state) => state.user,
-  )
-  const user = useSelector((x) => x.user)
+  const {
+    users,
+    pendingUsers,
+    activeUsers,
+    flaggedUsers,
+    supportedUsers,
+    userSelectionMetrics,
+    test,
+    profileCompletionMetrics
+  } = useSelector((state) => state.user)
   const pendingUsersLength = pendingUsers?.length || 0
   const activeUsersLength = activeUsers?.length || 0
   const flaggedUsersLength = flaggedUsers?.length || 0
+  const totalUsers = users?.length || 0
+
+  const cardData = [
+    {
+      id: 1,
+      title: 'Total Users',
+      value: totalUsers,
+      color: '#4361ee',
+      path: '/users',
+    },
+    {
+      id: 2,
+      title: 'Active Users',
+      value: activeUsersLength,
+      color: '#3a86ff',
+      path: '/activeUsers',
+    },
+    {
+      id: 3,
+      title: 'Pending Verifications',
+      value: pendingUsersLength,
+      color: '#ff9e00',
+      path: '/pendingUsers',
+    },
+    {
+      id: 4,
+      title: 'Flagged Users',
+      value: flaggedUsersLength,
+      color: '#e74c3c',
+      path: '/flaggedUsers',
+    },
+  ]
+
+  useEffect(() => {
+    console.log('test', profileCompletionMetrics)
+  })
 
   useEffect(() => {
     // Dispatch the getAllUsers thunk when component mounts
@@ -81,12 +131,20 @@ const Dashboard = () => {
     dispatch(getPendingUsers())
     dispatch(getActiveUsers())
     dispatch(getFlaggedUsers())
+    dispatch(getDailyActiveUsers())
+    dispatch(getMonthlyActiveUsers())
+    dispatch(getWeeklyMatches())
+    dispatch(getMonthlyMatches())
+    dispatch(getSupportedUsers())
+    dispatch(getUserSelectionMetrics())
+    dispatch(testApi())
+    dispatch(getMostSkippedSection())
+
 
     // console.log(users)
   }, [dispatch])
 
   // Calculate metrics from users array
-  const totalUsers = users?.length || 0
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
     { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
@@ -227,12 +285,7 @@ const Dashboard = () => {
       {/* <CRow className="mb-4"> */}
       <CCard className="mb-4">
         <CCol xs={12}>
-          <DashboardCards
-            totalUsers={totalUsers}
-            pendingUsers={pendingUsersLength}
-            activeUsers={activeUsersLength}
-            flaggedUsers={flaggedUsersLength}
-          />
+          <DashboardCards items={cardData} />
         </CCol>
       </CCard>
       {/* </CRow> */}
@@ -302,69 +355,69 @@ const Dashboard = () => {
       }
       {/* {<WidgetsBrand className="mb-4" withCharts />} */}
       {
-        <CRow>
-          <CCol xs>
-            <CCard className="mb-4">
-              <CCardHeader>Flagged Users</CCardHeader>
-              <CCardBody>
-                <br />
-                <CTable align="middle" className="mb-0 border" hover responsive>
-                  <CTableHead className="text-nowrap">
-                    <CTableRow>
-                      <CTableHeaderCell className="bg-body-tertiary text-center">
-                        <CIcon icon={cilPeople} />
-                      </CTableHeaderCell>
-                      <CTableHeaderCell className="bg-body-tertiary">User</CTableHeaderCell>
-                      {/* <CTableHeaderCell className="bg-body-tertiary text-center">
-                        Country
-                      </CTableHeaderCell> */}
-                      {/* <CTableHeaderCell className="bg-body-tertiary">Usage</CTableHeaderCell> */}
-                      {/* <CTableHeaderCell className="bg-body-tertiary text-center">
-                        Payment Method
-                      </CTableHeaderCell> */}
-                      {/* <CTableHeaderCell className="bg-body-tertiary">Activity</CTableHeaderCell> */}
-                    </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                    {tableExample.map((item, index) => (
-                      <CTableRow v-for="item in tableItems" key={index}>
-                        <CTableDataCell className="text-center">
-                          <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
-                        </CTableDataCell>
-                        <CTableDataCell>
-                          <div>{item.user.name}</div>
-                          <div className="small text-body-secondary text-nowrap">
-                            <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
-                            {item.user.registered}
-                          </div>
-                        </CTableDataCell>
-                        {/* <CTableDataCell className="text-center">
-                          <CIcon size="xl" icon={item.country.flag} title={item.country.name} />
-                        </CTableDataCell> */}
-                        {/* <CTableDataCell>
-                          <div className="d-flex justify-content-between text-nowrap">
-                            <div className="fw-semibold">{item.usage.value}%</div>
-                            <div className="ms-3">
-                              <small className="text-body-secondary">{item.usage.period}</small>
-                            </div>
-                          </div>
-                          <CProgress thin color={item.usage.color} value={item.usage.value} />
-                        </CTableDataCell> */}
-                        {/* <CTableDataCell className="text-center">
-                          <CIcon size="xl" icon={item.payment.icon} />
-                        </CTableDataCell> */}
-                        {/* <CTableDataCell>
-                          <div className="small text-body-secondary text-nowrap">Last login</div>
-                          <div className="fw-semibold text-nowrap">{item.activity}</div>
-                        </CTableDataCell> */}
-                      </CTableRow>
-                    ))}
-                  </CTableBody>
-                </CTable>
-              </CCardBody>
-            </CCard>
-          </CCol>
-        </CRow>
+        // <CRow>
+        //   <CCol xs>
+        //     <CCard className="mb-4">
+        //       <CCardHeader>Flagged Users</CCardHeader>
+        //       <CCardBody>
+        //         <br />
+        //         <CTable align="middle" className="mb-0 border" hover responsive>
+        //           <CTableHead className="text-nowrap">
+        //             <CTableRow>
+        //               <CTableHeaderCell className="bg-body-tertiary text-center">
+        //                 <CIcon icon={cilPeople} />
+        //               </CTableHeaderCell>
+        //               <CTableHeaderCell className="bg-body-tertiary">User</CTableHeaderCell>
+        //               {/* <CTableHeaderCell className="bg-body-tertiary text-center">
+        //                 Country
+        //               </CTableHeaderCell> */}
+        //               {/* <CTableHeaderCell className="bg-body-tertiary">Usage</CTableHeaderCell> */}
+        //               {/* <CTableHeaderCell className="bg-body-tertiary text-center">
+        //                 Payment Method
+        //               </CTableHeaderCell> */}
+        //               {/* <CTableHeaderCell className="bg-body-tertiary">Activity</CTableHeaderCell> */}
+        //             </CTableRow>
+        //           </CTableHead>
+        //           <CTableBody>
+        //             {tableExample.map((item, index) => (
+        //               <CTableRow v-for="item in tableItems" key={index}>
+        //                 <CTableDataCell className="text-center">
+        //                   <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
+        //                 </CTableDataCell>
+        //                 <CTableDataCell>
+        //                   <div>{item.user.name}</div>
+        //                   <div className="small text-body-secondary text-nowrap">
+        //                     <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
+        //                     {item.user.registered}
+        //                   </div>
+        //                 </CTableDataCell>
+        //                 {/* <CTableDataCell className="text-center">
+        //                   <CIcon size="xl" icon={item.country.flag} title={item.country.name} />
+        //                 </CTableDataCell> */}
+        //                 {/* <CTableDataCell>
+        //                   <div className="d-flex justify-content-between text-nowrap">
+        //                     <div className="fw-semibold">{item.usage.value}%</div>
+        //                     <div className="ms-3">
+        //                       <small className="text-body-secondary">{item.usage.period}</small>
+        //                     </div>
+        //                   </div>
+        //                   <CProgress thin color={item.usage.color} value={item.usage.value} />
+        //                 </CTableDataCell> */}
+        //                 {/* <CTableDataCell className="text-center">
+        //                   <CIcon size="xl" icon={item.payment.icon} />
+        //                 </CTableDataCell> */}
+        //                 {/* <CTableDataCell>
+        //                   <div className="small text-body-secondary text-nowrap">Last login</div>
+        //                   <div className="fw-semibold text-nowrap">{item.activity}</div>
+        //                 </CTableDataCell> */}
+        //               </CTableRow>
+        //             ))}
+        //           </CTableBody>
+        //         </CTable>
+        //       </CCardBody>
+        //     </CCard>
+        //   </CCol>
+        // </CRow>
       }
     </>
   )
