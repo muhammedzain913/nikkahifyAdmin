@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
-import { Url } from '../userConstant'
+
 
 const initialState = {
   sidebarShow: true,
