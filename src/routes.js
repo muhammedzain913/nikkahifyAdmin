@@ -1,6 +1,23 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const EditUser = React.lazy(() => import('./views/pages/admin/EditUserProfile'))
+const ActiveUsers = React.lazy(() => import('./views/pages/admin/ActiveUsers'))
+const VerifyUser = React.lazy(() => import('./views/pages/admin/VerifyUser'))
+const CompletedProfileUsers = React.lazy(() => import('./views/pages/admin/CompletedProfileUsers'))
+const PendingUsers = React.lazy(() => import('./views/pages/admin/PendingUsers'))
+const SkippedPortions = React.lazy(() => import('./views/pages/admin/SkippedPortions'))
+const Users = React.lazy(() => import('./views/pages/admin/Users'))
+const MatchRate = React.lazy(() => import('./views/pages/admin/MatchRate'))
+const SectionMonitoring = React.lazy(() => import('./views/pages/admin/SecionMonitoring'))
+const ProfileCompletionRate = React.lazy(() => import('./views/pages/admin/ProfileCompletionRate'))
+const PromotingRate = React.lazy(() => import('./views/pages/admin/PromotingRate'))
+const PromotingUsers = React.lazy(() => import('./views/pages/admin/PromotingUsers'))
+const WeeklyMatchedUsers = React.lazy(() => import('./views/pages/admin/WeeklyMatchedUsers'))
+const MonthlyMatchedUsers = React.lazy(() => import('./views/pages/admin/MonthlyMatchedUsers'))
+const DAU = React.lazy(() => import('./views/pages/admin/DailyActiveUsers'))
+const MAU = React.lazy(() => import('./views/pages/admin/MonthlyActiveUsers'))
+const UserEngagement = React.lazy(() => import('./views/pages/admin/UserEngagement'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -54,6 +71,28 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/verifyUser/:userId', name: 'Verify User', element: VerifyUser },
+  { path: '/skippedPortion', name: 'Skipped Portion', element: SkippedPortions },
+  { path: '/pendingUsers', name: 'Pending Users', element: PendingUsers },
+  { path: '/completedProfileUsers', name: 'Completed Profiles', element: CompletedProfileUsers },
+  { path: '/editUser/:userId', name: 'EditUser', element: EditUser },
+  { path: '/matchRate', name: 'Match Rate', element: MatchRate },
+  { path: '/sectionMonitoring', name: 'Section Monitoring', element: SectionMonitoring },
+  {
+    path: '/profileCompletionRate',
+    name: 'Profile Completion Rate',
+    element: ProfileCompletionRate,
+  },
+  { path: '/promotingRate', name: 'Promoting Rate', element: PromotingRate },
+  { path: '/promotingUsers', name: 'Promoting Users', element: PromotingUsers },
+  { path: '/activeUsers', name: 'Active Users', element: ActiveUsers },
+  { path: '/weeklyMatchedUsers', name: 'WeeklyMatchedUsers', element: WeeklyMatchedUsers },
+  { path: '/monthlyMatchedUsers', name: 'MonthlyMatchedUsers', element: MonthlyMatchedUsers },
+  { path: '/users', name: 'Users', element: Users },
+  { path: '/userEngagement', name: 'User Engagement', element: UserEngagement },
+  { path: '/dailyActiveUsers', name: 'DAU', element: DAU },
+  { path: '/monthlyActiveUsers', name: 'MAU', element: MAU },
+  { path: '/monthlyActiveUsers', name: 'MAU', element: MAU },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
