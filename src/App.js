@@ -19,7 +19,6 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 
 const MAU = React.lazy(() => import('./views/pages/admin/MonthlyActiveUsers'))
 // const Edituser = React.lazy(() => import('./views/pages/admin/EditUserProfile'))
-const Test = React.lazy(() => import('./views/pages/admin/Test'))
 
 const App = () => {
   // const { isAuthenticated, token } = useSelector((state) => state.user)
