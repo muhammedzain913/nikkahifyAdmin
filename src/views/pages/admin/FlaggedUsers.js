@@ -98,7 +98,7 @@ const FlaggedUsers = () => {
     }
     fetchCountries()
 
-    console.log('id', actualUsers[0]._id)
+    console.log('id', actualUsers[0]?._id)
   }, [])
 
   const applyFilters = () => {
