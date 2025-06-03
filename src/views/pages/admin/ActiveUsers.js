@@ -99,8 +99,6 @@ const ActiveUsers = () => {
       setCountries(countriesData)
     }
     fetchCountries()
-
-    console.log('id', actualUsers[0]._id)
   }, [])
 
   const applyFilters = () => {
@@ -271,7 +269,9 @@ const ActiveUsers = () => {
                             <CDropdownItem onClick={() => navigate(`/verifyUser/${user._id}`)}>
                               Verify User
                             </CDropdownItem>
-                            <CDropdownItem href="#">Edit User</CDropdownItem>
+                            <CDropdownItem onClick={() => navigate(`/editUser/${user._id}`)}>
+                              Edit User
+                            </CDropdownItem>
                             <CDropdownItem href="#" className="text-danger">
                               Delete User
                             </CDropdownItem>
