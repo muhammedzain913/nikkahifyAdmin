@@ -1,0 +1,11 @@
+/* Override CoreUI sidebar width variables */
+:root {
+  --cui-sidebar-width: 320px;
+  --cui-sidebar-narrow-width: 80px;
+}
+
+@media (min-width: 992px) {
+  .sidebar {
+    width: 320px !important;
+  }
+}
