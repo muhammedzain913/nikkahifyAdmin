@@ -3,6 +3,7 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const EditUser = React.lazy(() => import('./views/pages/admin/EditUserProfile'))
 const ActiveUsers = React.lazy(() => import('./views/pages/admin/ActiveUsers'))
+const FlaggedUsers = React.lazy(() => import('./views/pages/admin/FlaggedUsers'))
 const VerifyUser = React.lazy(() => import('./views/pages/admin/VerifyUser'))
 const CompletedProfileUsers = React.lazy(() => import('./views/pages/admin/CompletedProfileUsers'))
 const PendingUsers = React.lazy(() => import('./views/pages/admin/PendingUsers'))
@@ -72,6 +73,7 @@ const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/verifyUser/:userId', name: 'Verify User', element: VerifyUser },
+  { path: '/flaggedUsers', name: 'Flagged Users', element: FlaggedUsers },
   { path: '/skippedPortion', name: 'Skipped Portion', element: SkippedPortions },
   { path: '/pendingUsers', name: 'Pending Users', element: PendingUsers },
   { path: '/completedProfileUsers', name: 'Completed Profiles', element: CompletedProfileUsers },
