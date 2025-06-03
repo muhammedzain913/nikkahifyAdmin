@@ -21,9 +21,11 @@ import { unwrapResult } from '@reduxjs/toolkit'
 
 const Register = () => {
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
   const [userInfo, setUserInfo] = useState({
-    email: '',
+    userName: '',
     password: '',
+    email: '',
   })
 
   const handleInputChange = (name, value) => {
@@ -39,17 +41,28 @@ const Register = () => {
     return re.test(String(email).toLowerCase())
   }
 
-  const handleSubmit = async () => {
-    if (!validateEmail(userInfo.email)) {
-      console.log('Error', 'Please enter a valid email address')
+  const handleRegister = async () => {
+    const { email, password, userName } = userInfo
+
+    setLoading(true)
+    if (!email || !password || !userName) {
+      Alert.alert('Error', 'Please fill all the fields')
+      return
+    }
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Please enter a valid email address')
       return
     }
     try {
-      console.log('reached here ')
-      // const resultAction = await dispatch(registerUser(userInfo))
-      // unwrapResult(resultAction)
-      const data = await authApi.sendOtp(userInfo)
-    } catch (error) {}
+      console.log('hi')
+      const resultAction = await dispatch(registerUser(userInfo))
+      unwrapResult(resultAction)
+    } catch (error) {
+      alert(error)
+    } finally {
+      setLoading(false)
+    }
+    setLoading(false)
   }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
@@ -68,13 +81,25 @@ const Register = () => {
                     <CFormInput placeholder="Username" autoComplete="username" />
                   </CInputGroup> */}
                   <CInputGroup className="mb-3">
-                    <CInputGroupText>@</CInputGroupText>
+                    <CInputGroupText>
+                      <CIcon icon={cilLockLocked} />
+                    </CInputGroupText>
                     <CFormInput
+                      type="email"
                       placeholder="Email"
                       autoComplete="email"
-                      type="text"
                       value={userInfo.email}
                       onChange={(email) => handleInputChange('email', email.target.value)}
+                    />
+                  </CInputGroup>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>@</CInputGroupText>
+                    <CFormInput
+                      placeholder="User Name"
+                      autoComplete="email"
+                      type="text"
+                      value={userInfo.userName}
+                      onChange={(userName) => handleInputChange('userName', userName.target.value)}
                     />
                   </CInputGroup>
                   <CInputGroup className="mb-3">
@@ -89,6 +114,7 @@ const Register = () => {
                       onChange={(password) => handleInputChange('password', password.target.value)}
                     />
                   </CInputGroup>
+
                   {/* <CInputGroup className="mb-4">
                     <CInputGroupText>
                       <CIcon icon={cilLockLocked} />
@@ -100,7 +126,7 @@ const Register = () => {
                     />
                   </CInputGroup> */}
                   <div className="d-grid">
-                    <CButton onClick={handleSubmit} color="success">
+                    <CButton onClick={handleRegister} color="success">
                       Create Account
                     </CButton>
                   </div>
