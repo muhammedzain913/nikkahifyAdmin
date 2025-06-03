@@ -25,7 +25,6 @@ const adminApi = {
     try {
       console.log('puserid', statusObj)
       const response = await api.post(`/api/admin/verifyuser`, statusObj)
-      //   console.log(response.data)
       return response.data
     } catch (error) {
       console.error(`Error fetching user `, error)
@@ -35,7 +34,7 @@ const adminApi = {
   },
 
   deleteUser: async (userId) => {
-    try { 
+    try {
       console.log('puserid', userId)
       const response = await api.delete(`/api/admin/${userId}`)
       //   console.log(response.data)
@@ -43,6 +42,17 @@ const adminApi = {
     } catch (error) {
       console.error(`Error fetching user `, error.message)
       const errorMessage = error.response?.data?.message || 'Failed to fetch user'
+      throw new Error(errorMessage)
+    }
+  },
+  updateUser: async (userId, updates) => {
+    try {
+      console.log('updating user:', userId, 'with data:', updates)
+      const response = await api.put(`/api/admin/update_user/${userId}`, updates)
+      return response.data
+    } catch (error) {
+      console.error(`Error updating user ${userId}:`, error)
+      const errorMessage = error.response?.data?.message || 'Failed to update user'
       throw new Error(errorMessage)
     }
   },
