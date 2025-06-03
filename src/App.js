@@ -16,7 +16,7 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 // const Users = React.lazy(() => import('./views/pages/admin/Users'))
 
 
-const FlaggedUsers = React.lazy(() => import('./views/pages/admin/FlaggedUsers'))
+
 const MAU = React.lazy(() => import('./views/pages/admin/MonthlyActiveUsers'))
 // const Edituser = React.lazy(() => import('./views/pages/admin/EditUserProfile'))
 const Test = React.lazy(() => import('./views/pages/admin/Test'))
