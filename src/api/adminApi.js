@@ -33,6 +33,20 @@ const adminApi = {
     }
   },
 
+  verifyKycUser: async (reqObj) => {
+    try {
+      console.log('puserid', reqObj)
+      const response = await api.patch(`/api/admin/verifyKyc/${reqObj.postId}`, {
+        status: reqObj.status,
+      })
+      return response.data
+    } catch (error) {
+      console.error(`Error fetching user `, error.message)
+      const errorMessage = error.response?.data?.message || 'Failed to fetch user'
+      throw new Error(errorMessage)
+    }
+  },
+
   deleteUser: async (userId) => {
     try {
       console.log('puserid', userId)
