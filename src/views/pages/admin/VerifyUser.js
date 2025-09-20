@@ -429,30 +429,32 @@ const VerifyUser = () => {
                       )}
                     </CRow>
                   </CCol>
-                  <CRow className="mt-4">
-                    <CCol md={12}>
-                      <div className="d-flex justify-content-center gap-3">
-                        <CButton
-                          onClick={() => handleKycSubmit(user.kycInfo._id, 'isVerified')}
-                          color="success"
-                          size="lg"
-                          className="px-4"
-                        >
-                          <CIcon icon={cilCheckCircle} className="me-2" />
-                          Verify KYC
-                        </CButton>
-                        <CButton
-                          onClick={() => handleKycSubmit(user.kycInfo._id, 'isRejected')}
-                          color="danger"
-                          size="lg"
-                          className="px-4"
-                        >
-                          <CIcon icon={cilX} className="me-2" />
-                          Reject KYC
-                        </CButton>
-                      </div>
-                    </CCol>
-                  </CRow>
+                  {user.kycInfo?.status === 'isPending' && (
+                    <CRow className="mt-4">
+                      <CCol md={12}>
+                        <div className="d-flex justify-content-center gap-3">
+                          <CButton
+                            onClick={() => handleKycSubmit(user.kycInfo._id, 'isVerified')}
+                            color="success"
+                            size="lg"
+                            className="px-4"
+                          >
+                            <CIcon icon={cilCheckCircle} className="me-2" />
+                            Verify KYC
+                          </CButton>
+                          <CButton
+                            onClick={() => handleKycSubmit(user.kycInfo._id, 'isRejected')}
+                            color="danger"
+                            size="lg"
+                            className="px-4"
+                          >
+                            <CIcon icon={cilX} className="me-2" />
+                            Reject KYC
+                          </CButton>
+                        </div>
+                      </CCol>
+                    </CRow>
+                  )}
                 </CRow>
               ) : (
                 <CAlert color="warning" className="text-center">

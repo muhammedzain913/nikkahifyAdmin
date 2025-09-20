@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { act, useEffect, useState } from 'react'
 
 import {
   CAvatar,
@@ -44,6 +44,10 @@ const ActiveUsers = () => {
     country: '',
     gender: '',
     maritalStatus: '',
+  })
+
+  useEffect(() => {
+    console.log('evrified users', actualUsers)
   })
 
   const [filteredUsers, setFilteredUsers] = useState(actualUsers)

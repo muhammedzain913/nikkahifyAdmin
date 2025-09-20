@@ -43,6 +43,10 @@ const WeeklyMatchedUsers = () => {
 
   const [filteredMatches, setFilteredUsers] = useState(weeklyMatchedUsers)
 
+  useEffect(()=>{
+    console.log('weekly',weeklyMatchedUsers)
+  })
+
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   // Function to determine user status badge color
@@ -204,10 +208,10 @@ const WeeklyMatchedUsers = () => {
                         <CAvatar size="md" src={match.avatar} status={match.status} />
                       </CTableDataCell>
                       <CTableDataCell>
-                        <div className="fw-semibold">{match.senderId.name}</div>
+                        <div className="fw-semibold">{match.senderId?.name}</div>
                       </CTableDataCell>
                       <CTableDataCell>
-                        <div className="fw-semibold">{match.receiverId.name}</div>
+                        <div className="fw-semibold">{match.receiverId?.name}</div>
                       </CTableDataCell>
                       <CTableDataCell>{formatDate(match.createdAt)}</CTableDataCell>
                     </CTableRow>

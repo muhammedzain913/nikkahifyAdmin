@@ -65,18 +65,23 @@ const Users = () => {
   // Function to determine user status badge color
   const getBadgeColor = (status) => {
     switch (status) {
-      case 'active':
+      case 'isVerified':
         return 'success'
-      case 'inactive':
-        return 'secondary'
-      case 'pending':
+      case 'isPending':
         return 'warning'
-      case 'suspended':
+      case 'isRejected':
         return 'danger'
       default:
         return 'primary'
     }
   }
+
+  useEffect(() => {
+    console.log(
+      'filtered',
+      actualUsers.filter((x) => x.kycInfo !== undefined),
+    )
+  })
 
   // Function to format date
   const formatDate = (dateString) => {
@@ -360,7 +365,15 @@ const Users = () => {
                         )}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CBadge color={getBadgeColor(user.status)}>{user.status}</CBadge>
+                        <CBadge color={getBadgeColor(user.kycInfo?.status)}>
+                          {user.kycInfo?.status === 'isPending'
+                            ? 'Pending'
+                            : user.kycInfo?.status === 'isVerified'
+                              ? 'Verified'
+                              : user.kycInfo?.status === 'isRejected'
+                                ? 'Rejected'
+                                : 'No Kyc Uploaded'}
+                        </CBadge>
                       </CTableDataCell>
                       <CTableDataCell>{formatDate(user.createdAt)}</CTableDataCell>
                       <CTableDataCell>{formatDate(user.lastLogin)}</CTableDataCell>

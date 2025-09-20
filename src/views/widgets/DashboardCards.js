@@ -104,16 +104,13 @@ import { useNavigate } from 'react-router-dom'
 
 const DashboardCards = ({ items }) => {
   const navigate = useNavigate()
-
-
-
   const handleCardClick = (path) => {
-    console.log(path)
+    console.log('path', path)
     navigate(path)
   }
 
-  useEffect(() =>{
-    console.log('thigig',items)
+  useEffect(() => {
+    console.log('thigig', items)
   })
   return (
     <div className="dashboard-cards-container">
