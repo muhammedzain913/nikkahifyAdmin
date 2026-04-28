@@ -61,6 +61,8 @@ const VerifyUser = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [activeTab, setActiveTab] = useState(1)
+  const [signedKycUrls, setSignedKycUrls] = useState({ front: null, back: null })
+  const [kycImageError, setKycImageError] = useState(null)
   const { userId } = useParams()
 
   useEffect(() => {
@@ -69,7 +71,24 @@ const VerifyUser = () => {
         setLoading(true)
         const response = await adminApi.getUserById(userId)
         console.log('from component', response.userData.kycInfo)
-        await setUser(response.userData)
+        const userData = response.userData
+        await setUser(userData)
+
+        // Prefer signed URLs so S3 objects can stay private.
+        const kycId = userData?.kycInfo?._id
+        if (kycId) {
+          try {
+            setKycImageError(null)
+            const signed = await adminApi.getKycDocumentSignedUrls(kycId)
+            setSignedKycUrls({
+              front: signed?.frontUrl || signed?.documentImageUrl || null,
+              back: signed?.backUrl || signed?.documentImageUrlBack || null,
+            })
+          } catch (e) {
+            setSignedKycUrls({ front: null, back: null })
+            setKycImageError(e?.message || 'Unable to load secure document images')
+          }
+        }
         setLoading(false)
       } catch (error) {
         console.log(error)
@@ -81,7 +100,7 @@ const VerifyUser = () => {
     if (userId) {
       fetchUser()
     }
-  }, [])
+  }, [userId])
 
   useEffect(() => {
     console.log('afterfetch', user)
@@ -377,13 +396,18 @@ const VerifyUser = () => {
                   </CCol>
                   <CCol md={6}>
                     <h6 className="mb-3">Document Images</h6>
+                    {kycImageError && (
+                      <CAlert color="warning" className="mb-3">
+                        {kycImageError}
+                      </CAlert>
+                    )}
                     <CRow>
-                      {user.kycInfo.documentImageUrl && (
+                      {(signedKycUrls.front || user.kycInfo.documentImageUrl) && (
                         <CCol md={6} className="mb-3">
                           <div className="text-center">
                             <small className="text-medium-emphasis d-block mb-2">Front Side</small>
                             <CImage
-                              src={user.kycInfo.documentImageUrl}
+                              src={signedKycUrls.front || user.kycInfo.documentImageUrl}
                               alt="Document Front"
                               style={{
                                 width: '100%',
@@ -393,17 +417,22 @@ const VerifyUser = () => {
                                 borderRadius: '8px',
                                 cursor: 'pointer',
                               }}
-                              onClick={() => window.open(user.kycInfo.documentImageUrl, '_blank')}
+                              onClick={() =>
+                                window.open(
+                                  signedKycUrls.front || user.kycInfo.documentImageUrl,
+                                  '_blank',
+                                )
+                              }
                             />
                           </div>
                         </CCol>
                       )}
-                      {user.kycInfo.documentImageUrlBack && (
+                      {(signedKycUrls.back || user.kycInfo.documentImageUrlBack) && (
                         <CCol md={6} className="mb-3">
                           <div className="text-center">
                             <small className="text-medium-emphasis d-block mb-2">Back Side</small>
                             <CImage
-                              src={user.kycInfo.documentImageUrlBack}
+                              src={signedKycUrls.back || user.kycInfo.documentImageUrlBack}
                               alt="Document Back"
                               style={{
                                 width: '100%',
@@ -414,19 +443,25 @@ const VerifyUser = () => {
                                 cursor: 'pointer',
                               }}
                               onClick={() =>
-                                window.open(user.kycInfo.documentImageUrlBack, '_blank')
+                                window.open(
+                                  signedKycUrls.back || user.kycInfo.documentImageUrlBack,
+                                  '_blank',
+                                )
                               }
                             />
                           </div>
                         </CCol>
                       )}
-                      {!user.kycInfo.documentImageUrl && !user.kycInfo.documentImageUrlBack && (
+                      {!signedKycUrls.front &&
+                      !signedKycUrls.back &&
+                      !user.kycInfo.documentImageUrl &&
+                      !user.kycInfo.documentImageUrlBack ? (
                         <CCol md={12}>
                           <CAlert color="info" className="text-center">
                             No document images available
                           </CAlert>
                         </CCol>
-                      )}
+                      ) : null}
                     </CRow>
                   </CCol>
                 </CRow>

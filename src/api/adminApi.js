@@ -21,6 +21,22 @@ const adminApi = {
     }
   },
 
+  /**
+   * Fetch short-lived (signed) URLs for KYC document images.
+   * Backend must validate admin auth + ownership before signing.
+   */
+  getKycDocumentSignedUrls: async (kycId) => {
+    try {
+      const response = await api.get(`/api/admin/kyc/${kycId}/document-signed-urls`)
+      return response.data
+    } catch (error) {
+      console.error(`Error fetching signed KYC urls for ${kycId}:`, error)
+      const errorMessage =
+        error.response?.data?.message || 'Failed to fetch signed KYC document URLs'
+      throw new Error(errorMessage)
+    }
+  },
+
   verifyUser: async (statusObj) => {
     try {
       console.log('puserid', statusObj)
