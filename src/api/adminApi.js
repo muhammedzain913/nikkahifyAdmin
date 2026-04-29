@@ -4,6 +4,14 @@ import { Url } from '../Redux/userConstant'
 const api = axios.create({
   baseURL: Url,
 })
+
+/** @param {string} token */
+function authHeader(token) {
+  if (!token || typeof token !== 'string') {
+    throw new Error('Admin token is required')
+  }
+  return { Authorization: token.replace(/^Bearer\s+/i, '') }
+}
 const adminApi = {
   // ... other methods
 
@@ -83,6 +91,45 @@ const adminApi = {
     } catch (error) {
       console.error(`Error updating user ${userId}:`, error)
       const errorMessage = error.response?.data?.message || 'Failed to update user'
+      throw new Error(errorMessage)
+    }
+  },
+
+  /**
+   * Push notification to all app users (admin).
+   * @param {{ title: string, message: string, data?: object }} payload
+   * @param {string} adminToken JWT from Redux after login
+   */
+  broadcastNotification: async (payload, adminToken) => {
+    try {
+      const response = await api.post(`/api/admin/notifications/broadcast`, payload, {
+        headers: { ...authHeader(adminToken) },
+      })
+      return response.data
+    } catch (error) {
+      console.error('broadcastNotification:', error)
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Failed to send broadcast notification'
+      throw new Error(errorMessage)
+    }
+  },
+
+  /**
+   * Push notification to a single user (admin).
+   * @param {string} userId
+   * @param {{ message: string }} body
+   * @param {string} adminToken JWT from Redux after login
+   */
+  sendNotificationToUser: async (userId, body, adminToken) => {
+    try {
+      const response = await api.post(`/api/admin/notifications/user/${userId}`, body, {
+        headers: { ...authHeader(adminToken) },
+      })
+      return response.data
+    } catch (error) {
+      console.error('sendNotificationToUser:', error)
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Failed to send user notification'
       throw new Error(errorMessage)
     }
   },

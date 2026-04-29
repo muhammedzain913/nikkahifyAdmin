@@ -9,6 +9,7 @@ const CompletedProfileUsers = React.lazy(() => import('./views/pages/admin/Compl
 const PendingUsers = React.lazy(() => import('./views/pages/admin/PendingUsers'))
 const SkippedPortions = React.lazy(() => import('./views/pages/admin/SkippedPortions'))
 const Users = React.lazy(() => import('./views/pages/admin/Users'))
+const SendNotifications = React.lazy(() => import('./views/pages/admin/SendNotifications'))
 const MatchRate = React.lazy(() => import('./views/pages/admin/MatchRate'))
 const SectionMonitoring = React.lazy(() => import('./views/pages/admin/SecionMonitoring'))
 const ProfileCompletionRate = React.lazy(() => import('./views/pages/admin/ProfileCompletionRate'))
@@ -91,6 +92,7 @@ const routes = [
   { path: '/weeklyMatchedUsers', name: 'WeeklyMatchedUsers', element: WeeklyMatchedUsers },
   { path: '/monthlyMatchedUsers', name: 'MonthlyMatchedUsers', element: MonthlyMatchedUsers },
   { path: '/users', name: 'Users', element: Users },
+  { path: '/sendNotifications', name: 'Send Notifications', element: SendNotifications },
   { path: '/userEngagement', name: 'User Engagement', element: UserEngagement },
   { path: '/dailyActiveUsers', name: 'DAU', element: DAU },
   { path: '/monthlyActiveUsers', name: 'MAU', element: MAU },
