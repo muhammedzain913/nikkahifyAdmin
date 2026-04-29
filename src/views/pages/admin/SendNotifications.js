@@ -26,6 +26,8 @@ const SendNotifications = () => {
 
   const [targetUserId, setTargetUserId] = useState('')
   const [userMessage, setUserMessage] = useState('')
+  const [menSearch, setMenSearch] = useState('')
+  const [womenSearch, setWomenSearch] = useState('')
 
   const [broadcastLoading, setBroadcastLoading] = useState(false)
   const [userLoading, setUserLoading] = useState(false)
@@ -34,6 +36,23 @@ const SendNotifications = () => {
 
   const tokenOk = typeof adminToken === 'string' && adminToken.length > 0
   const userList = Array.isArray(users) ? users : []
+
+  const normalizeGender = (g) =>
+    String(g || '')
+      .trim()
+      .toLowerCase()
+  const userSearchText = (user) =>
+    `${user?.code || ''} ${user?.name || ''} ${user?.email || ''} ${user?._id || ''}`.toLowerCase()
+
+  const menUsers = userList.filter((u) => normalizeGender(u?.gender) === 'men')
+  const womenUsers = userList.filter((u) => normalizeGender(u?.gender) === 'women')
+
+  const filteredMenUsers = menSearch.trim()
+    ? menUsers.filter((u) => userSearchText(u).includes(menSearch.trim().toLowerCase()))
+    : menUsers
+  const filteredWomenUsers = womenSearch.trim()
+    ? womenUsers.filter((u) => userSearchText(u).includes(womenSearch.trim().toLowerCase()))
+    : womenUsers
 
   const handleBroadcast = async (e) => {
     e.preventDefault()
@@ -170,20 +189,58 @@ const SendNotifications = () => {
                 </CAlert>
               )}
               <div className="mb-3">
-                <CFormLabel htmlFor="target-user-id">User</CFormLabel>
-                <CFormSelect
-                  id="target-user-id"
-                  aria-label="Select user"
-                  value={targetUserId}
-                  onChange={(e) => setTargetUserId(e.target.value)}
-                >
-                  <option value="">Choose a user…</option>
-                  {userList.map((user) => (
-                    <option key={user._id} value={user._id}>
-                      {user.name || user.email || user._id}
-                    </option>
-                  ))}
-                </CFormSelect>
+                <CFormLabel>Select user (by code)</CFormLabel>
+                <CRow className="g-2">
+                  <CCol sm={6}>
+                    <CFormLabel className="text-medium-emphasis" htmlFor="men-search">
+                      Men
+                    </CFormLabel>
+                    <CFormInput
+                      id="men-search"
+                      className="mb-2"
+                      placeholder="Search by user.code…"
+                      value={menSearch}
+                      onChange={(e) => setMenSearch(e.target.value)}
+                    />
+                    <CFormSelect
+                      aria-label="Select a men user"
+                      value={targetUserId}
+                      onChange={(e) => setTargetUserId(e.target.value)}
+                    >
+                      <option value="">Choose…</option>
+                      {filteredMenUsers.map((user) => (
+                        <option key={user._id} value={user._id}>
+                          {user.code || user._id}
+                        </option>
+                      ))}
+                    </CFormSelect>
+                  </CCol>
+
+                  <CCol sm={6}>
+                    <CFormLabel className="text-medium-emphasis" htmlFor="women-search">
+                      Women
+                    </CFormLabel>
+                    <CFormInput
+                      id="women-search"
+                      className="mb-2"
+                      placeholder="Search by user.code…"
+                      value={womenSearch}
+                      onChange={(e) => setWomenSearch(e.target.value)}
+                    />
+                    <CFormSelect
+                      aria-label="Select a women user"
+                      value={targetUserId}
+                      onChange={(e) => setTargetUserId(e.target.value)}
+                    >
+                      <option value="">Choose…</option>
+                      {filteredWomenUsers.map((user) => (
+                        <option key={user._id} value={user._id}>
+                          {user.code || user._id}
+                        </option>
+                      ))}
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
               </div>
               <div className="mb-3">
                 <CFormLabel htmlFor="user-message">Message</CFormLabel>
