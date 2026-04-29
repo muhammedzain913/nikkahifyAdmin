@@ -23,8 +23,6 @@ const SendNotifications = () => {
   const users = useSelector((state) => state.user.users)
   const [broadcastTitle, setBroadcastTitle] = useState('')
   const [broadcastMessage, setBroadcastMessage] = useState('')
-  const [broadcastType, setBroadcastType] = useState('announcement')
-  const [broadcastScreen, setBroadcastScreen] = useState('Home')
 
   const [targetUserId, setTargetUserId] = useState('')
   const [userMessage, setUserMessage] = useState('')
@@ -50,15 +48,10 @@ const SendNotifications = () => {
     }
     setBroadcastLoading(true)
     try {
-      const data = {
-        type: broadcastType.trim() || 'announcement',
-        screen: broadcastScreen.trim() || 'Home',
-      }
       await adminApi.broadcastNotification(
         {
           title: broadcastTitle.trim(),
           message: broadcastMessage.trim(),
-          data,
         },
         adminToken,
       )
@@ -147,26 +140,6 @@ const SendNotifications = () => {
                   placeholder="Maintenance tonight at 11:30 PM."
                 />
               </div>
-              <CRow className="mb-3">
-                <CCol sm={6}>
-                  <CFormLabel htmlFor="broadcast-type">Data: type</CFormLabel>
-                  <CFormInput
-                    id="broadcast-type"
-                    value={broadcastType}
-                    onChange={(e) => setBroadcastType(e.target.value)}
-                    placeholder="announcement"
-                  />
-                </CCol>
-                <CCol sm={6}>
-                  <CFormLabel htmlFor="broadcast-screen">Data: screen</CFormLabel>
-                  <CFormInput
-                    id="broadcast-screen"
-                    value={broadcastScreen}
-                    onChange={(e) => setBroadcastScreen(e.target.value)}
-                    placeholder="Home"
-                  />
-                </CCol>
-              </CRow>
               <CButton type="submit" color="primary" disabled={broadcastLoading}>
                 {broadcastLoading ? (
                   <>
