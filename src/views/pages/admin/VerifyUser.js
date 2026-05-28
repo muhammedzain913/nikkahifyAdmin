@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { getAllUsers } from '../../../Redux/Slices/userSlice'
 // import {
 //   CCard,
 //   CCardBody,
@@ -64,43 +66,43 @@ const VerifyUser = () => {
   const [signedKycUrls, setSignedKycUrls] = useState({ front: null, back: null })
   const [kycImageError, setKycImageError] = useState(null)
   const { userId } = useParams()
+  const dispatch = useDispatch()
+
+  const fetchUser = useCallback(async () => {
+    try {
+      setLoading(true)
+      const response = await adminApi.getUserById(userId)
+      console.log('from component', response.userData.kycInfo)
+      const userData = response.userData
+      setUser(userData)
+
+      // Prefer signed URLs so S3 objects can stay private.
+      const kycId = userData?.kycInfo?._id
+      if (kycId) {
+        try {
+          setKycImageError(null)
+          const signed = await adminApi.getKycDocumentSignedUrls(kycId)
+          setSignedKycUrls({
+            front: signed?.frontUrl || signed?.documentImageUrl || null,
+            back: signed?.backUrl || signed?.documentImageUrlBack || null,
+          })
+        } catch (e) {
+          setSignedKycUrls({ front: null, back: null })
+          setKycImageError(e?.message || 'Unable to load secure document images')
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }, [userId])
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoading(true)
-        const response = await adminApi.getUserById(userId)
-        console.log('from component', response.userData.kycInfo)
-        const userData = response.userData
-        await setUser(userData)
-
-        // Prefer signed URLs so S3 objects can stay private.
-        const kycId = userData?.kycInfo?._id
-        if (kycId) {
-          try {
-            setKycImageError(null)
-            const signed = await adminApi.getKycDocumentSignedUrls(kycId)
-            setSignedKycUrls({
-              front: signed?.frontUrl || signed?.documentImageUrl || null,
-              back: signed?.backUrl || signed?.documentImageUrlBack || null,
-            })
-          } catch (e) {
-            setSignedKycUrls({ front: null, back: null })
-            setKycImageError(e?.message || 'Unable to load secure document images')
-          }
-        }
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     if (userId) {
       fetchUser()
     }
-  }, [userId])
+  }, [userId, fetchUser])
 
   useEffect(() => {
     console.log('afterfetch', user)
@@ -137,10 +139,14 @@ const VerifyUser = () => {
   }
 
   const handleKycSubmit = async (postId, status) => {
-    await adminApi.verifyKycUser({
-      postId: postId,
-      status: status,
-    })
+    try {
+      await adminApi.verifyKycUser({ postId, status })
+      // Refresh local view and the Redux users list so the Users screen reflects the change
+      await fetchUser()
+      dispatch(getAllUsers())
+    } catch (e) {
+      console.error('KYC update failed:', e)
+    }
   }
   const handleSubmit = (action) => {
     const statusObj = {

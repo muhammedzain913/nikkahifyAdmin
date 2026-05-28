@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
@@ -10,18 +10,20 @@ import {
   CHeader,
   CHeaderNav,
   CHeaderToggler,
-  CNavLink,
   CNavItem,
+  CNavLink,
+  CFormInput,
+  CInputGroup,
+  CInputGroupText,
   useColorModes,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
   cilContrast,
-  cilEnvelopeOpen,
-  cilList,
   cilMenu,
   cilMoon,
+  cilSearch,
   cilSun,
 } from '@coreui/icons'
 
@@ -32,8 +34,9 @@ import { changeState } from '../Redux/Slices/styleSlice'
 const AppHeader = () => {
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
-
+  const [searchQuery, setSearchQuery] = useState('')
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const sidebarShow = useSelector((state) => state.style.sidebarShow)
 
   useEffect(() => {
@@ -43,46 +46,49 @@ const AppHeader = () => {
     })
   }, [])
 
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      navigate(`/users?search=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
+
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
       <CContainer className="border-bottom px-4" fluid>
         <CHeaderToggler
-          // onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
           onClick={() => dispatch(changeState({ sidebarShow: !sidebarShow }))}
           style={{ marginInlineStart: '-14px' }}
         >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
-        <CHeaderNav className="d-none d-md-flex">
-          <CNavItem>
-            <CNavLink to="/dashboard" as={NavLink}>
-              Dashboard
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Settings</CNavLink>
-          </CNavItem>
-        </CHeaderNav>
+
+        <form className="d-none d-md-flex ms-3" onSubmit={handleSearch} style={{ width: 280 }}>
+          <CInputGroup>
+            <CFormInput
+              placeholder="Search users..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ borderRadius: '8px 0 0 8px' }}
+            />
+            <CInputGroupText
+              as="button"
+              type="submit"
+              style={{ cursor: 'pointer', borderRadius: '0 8px 8px 0' }}
+            >
+              <CIcon icon={cilSearch} />
+            </CInputGroupText>
+          </CInputGroup>
+        </form>
+
         <CHeaderNav className="ms-auto">
           <CNavItem>
             <CNavLink href="#">
               <CIcon icon={cilBell} size="lg" />
             </CNavLink>
           </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilEnvelopeOpen} size="lg" />
-            </CNavLink>
-          </CNavItem>
         </CHeaderNav>
+
         <CHeaderNav>
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>

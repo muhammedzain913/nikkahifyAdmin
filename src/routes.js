@@ -1,6 +1,9 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const AdminProfile = React.lazy(() => import('./views/pages/admin/AdminProfile'))
+const RestrictedUsers = React.lazy(() => import('./views/pages/admin/RestrictedUsers'))
+const ReportedUsers = React.lazy(() => import('./views/pages/admin/ReportedUsers'))
 const EditUser = React.lazy(() => import('./views/pages/admin/EditUserProfile'))
 const ActiveUsers = React.lazy(() => import('./views/pages/admin/ActiveUsers'))
 const FlaggedUsers = React.lazy(() => import('./views/pages/admin/FlaggedUsers'))
@@ -72,6 +75,9 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
+  { path: '/profile', name: 'Profile', element: AdminProfile },
+  { path: '/restrictedUsers', name: 'Restricted Users', element: RestrictedUsers },
+  { path: '/reportedUsers', name: 'Reported Users', element: ReportedUsers },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/verifyUser/:userId', name: 'Verify User', element: VerifyUser },
   { path: '/flaggedUsers', name: 'Flagged Users', element: FlaggedUsers },

@@ -17,6 +17,7 @@ const initialState = {
   supportedUsers: [],
   userSelectionMetrics: {},
   profileCompletionMetrics: {},
+  subscriptionStats: null,
   test: null,
   isAuthenticated: false,
   status: 'idle',
@@ -223,6 +224,18 @@ export const getMostSkippedSection = createAsyncThunk(
   },
 )
 
+export const getSubscriptionStats = createAsyncThunk(
+  'user/getSubscriptionStats',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${Url}/api/admin/subscriptionStats`)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Something went wrong')
+    }
+  },
+)
+
 export const testApi = createAsyncThunk(
   'user/testApi',
   async (_, { dispatch, rejectWithValue }) => {
@@ -401,6 +414,15 @@ const userSlice = createSlice({
       })
       .addCase(getMostSkippedSection.rejected, (state, action) => {
         state.status = 'failed'
+        state.error = action.payload
+      })
+      .addCase(getSubscriptionStats.fulfilled, (state, action) => {
+        state.subscriptionStats = action.payload.data
+      })
+      .addCase(getSubscriptionStats.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(getSubscriptionStats.rejected, (state, action) => {
         state.error = action.payload
       })
       .addCase(loginUser.fulfilled, (state, action) => {
